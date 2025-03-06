@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  database_service:
+    build: ./services/database_service
+    container_name: database_service
+    volumes:
+      - ./services/database_service:/data
+      - ./data:/data
+    entrypoint: ["python", "init_db.py"]
+    restart: no
+
+  script_service:
+    build: ./services/script_service
+    container_name: script_service
+    depends_on:
+      - database_service
+    volumes:
+      - ./services/script_service:/app
+      - ./data:/data
+    ports:
+      - "5000:5000"
+    command: ["python", "app.py"]
+    restart: no
+

@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 import os
 from execute_queries import main as execute_main
+from import_data import main as import_data
 
 app = Flask(__name__)  
 DATABASE = "/data/database.db"  # SQLite database path inside the container
@@ -114,7 +115,7 @@ def get_analyses():
     analyses_list = [dict(analyse) for analyse in analyses]
     return jsonify(analyses_list)
 
-@app.route('/execute_analyses', methods=['POST'])
+@app.route('/execute_analyses', methods=['GET'])
 def execute_analyses():
     execute_main()
     return jsonify({"message": "Analyses executed and results stored in the database."}), 201
@@ -131,4 +132,5 @@ def get_tables():
 
 if __name__ == '__main__':
     create_tables()  # Create database tables
+    import_data()    # Import data from CSV files
     app.run(host="0.0.0.0", port=5000, debug=True)  # Start Flask server
